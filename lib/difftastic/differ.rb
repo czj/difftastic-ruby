@@ -3,6 +3,11 @@
 class Difftastic::Differ
 	DEFAULT_TAB_WIDTH = 2
 
+	# The inline display never wraps, so any width gives the same output, and
+	# passing one spares difft its terminal size detection, which spawns `tput`
+	# twice when there is no controlling terminal (servers, CI).
+	INLINE_DISPLAY_WIDTH = 80
+
 	def initialize(background: nil, color: nil, syntax_highlight: nil, context: nil, width: nil, tab_width: nil, parse_error_limit: nil, underline_highlights: true, left_label: nil, right_label: nil, display: "side-by-side-show-both")
 		@show_paths = false
 		@background = background => :dark | :light | nil
@@ -297,7 +302,7 @@ class Difftastic::Differ
 			("--syntax-highlight=#{@syntax_highlight}" if @syntax_highlight),
 			("--tab-width=#{@tab_width}" if @tab_width),
 			("--display=#{@display}" if @display),
-			("--width=#{@width}" if @width),
+			("--width=#{display_width}" if display_width),
 		].compact
 
 		result = Difftastic.capture(*options).lstrip.sub(/\n{2}\z/, "")
@@ -344,6 +349,10 @@ class Difftastic::Differ
 		# end
 
 		result
+	end
+
+	private def display_width
+		@width || (INLINE_DISPLAY_WIDTH if @display == "inline")
 	end
 
 	private def right_label_offset(line)

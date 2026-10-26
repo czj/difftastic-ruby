@@ -14,7 +14,7 @@ GEM
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.6.5)
-    maxitest (6.1.0)
+    maxitest (6.2.0)
       minitest (>= 5.20.0, < 5.28.0)
     minitest (5.27.0)
     parallel (1.27.0)
